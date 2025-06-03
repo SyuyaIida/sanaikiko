@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三愛機工 新規事業アイデア・エクスプローラー</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif; /* Interを優先し、日本語用にNoto Sans JPを指定 */
+        }
+        .modal {
+            display: none; /* 初期状態では非表示 */
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            animation: slideInUp 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* スクロールバーのスタイル（任意） */
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-3xl font-bold">有限会社三愛機工</h1>
+            <p class="text-xl mt-2 sm:mt-0">新規事業アイデア・エクスプローラー</p>
+        </div>
+    </header>
+
+    <section id="introduction" class="py-12 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-4 text-sky-700">三愛機工の未来を、共にデザインする。</h2>
+            <p class="text-lg text-slate-700 max-w-3xl mx-auto">
+                ここでは、三愛機工様の強みを活かした5つの新規事業アイデアをインタラクティブに探求できます。
+                気になるアイデアをクリックして、その可能性を一緒に広げていきましょう！
+            </p>
+        </div>
+    </section>
+
+    <main id="idea-grid" class="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        </main>
+
+    <footer class="bg-slate-800 text-slate-300 py-8 text-center">
+        <p>&copy; <span id="currentYear"></span> 有限会社三愛機工 新規事業アイデア・エクスプローラー. All rights reserved.</p>
+    </footer>
+
+    <div id="ideaModal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[100]">
+        <div class="modal-content bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-slate-200">
+                <h3 id="modalTitle" class="text-2xl font-semibold text-sky-700">アイデア詳細</h3>
+                <button id="closeModal" class="text-slate-500 hover:text-sky-600 transition-colors text-3xl" aria-label="閉じる">&times;</button>
+            </div>
+
+            <div class="modal-body p-6 overflow-y-auto flex-grow">
+                <div class="mb-4 border-b border-slate-200">
+                    <nav id="modalTabs" class="flex flex-wrap -mb-px space-x-1 sm:space-x-4" aria-label="Tabs">
+                        </nav>
+                </div>
+                <div id="modalTabContentContainer">
+                    </div>
+            </div>
+             <div class="p-4 bg-slate-50 border-t border-slate-200 text-right">
+                <button id="closeModalFooter" class="px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ideas = [
+            {
+                id: 1,
+                name: "特定業界特化型・自動化/省人化ソリューション開発事業",
+                type: "現実的アイデア",
+                catchphrase: "技術で課題解決！特定分野のNo.1へ",
+                image: "https://placehold.co/400x250/38bdf8/ffffff?text=親しみやすいロボットアームと歯車のイラスト",
+                overview: "貴社の強みである機械設計・製作、改造技術を活かし、特定の成長業界や地域産業（例：食品加工、農業、医療・介護周辺機器、環境関連など）に特化した自動化・省人化機械やシステムを開発・提供します。",
+                points: [
+                    "顧客の課題に深く入り込み、オーダーメイドに近い形でソリューションを提案することで、高い付加価値を提供します。「お客様と共に課題を解決する」という貴社のスタイルを活かせます。",
+                    "特定分野に絞ることで、専門性を高め、大手企業との差別化を図ります。",
+                    "これまで培ってきた多様な機械に関する知見を、新たな分野のニーズに合わせて応用・発展させます。"
+                ],
+                effects: "安定的な収益源の確保、専門分野でのブランド構築、地域産業への貢献。",
+                synergy: [
+                    "当社の精密加工技術が、特定分野の高性能部品製造に直結します。",
+                    "長年の機械メンテナンスで培ったトラブルシューティング能力が、安定稼働するシステムの開発に貢献します。",
+                    "既存顧客との信頼関係を基盤に、新たなニーズを発掘できます。"
+                ],
+                targetMarket: [
+                    { name: "食品加工A社", description: "生産ラインの効率化と人手不足解消に悩む。具体的な相談相手を探している。" },
+                    { name: "地域農業組合B", description: "収穫作業の自動化によるコスト削減と高齢化対策を模索中。" }
+                ],
+                steps: [
+                    "既存顧客へのヒアリングを通じたニーズ調査",
+                    "特定業界の市場動向・技術トレンド調査",
+                    "小規模なプロトタイプ開発と実証実験"
+                ],
+                challengePoints: null
+            },
+            {
+                id: 2,
+                name: "中小製造業向け「スマートファクトリー化」支援・コンサルティング事業",
+                type: "現実的アイデア",
+                catchphrase: "現場に寄り添うDX。中小企業を元気に！",
+                image: "https://placehold.co/400x250/67e8f9/ffffff?text=笑顔の作業員とタブレット、工場のイラスト",
+                overview: "長年の製造現場での経験と既存機械の知見を活かし、特に人手不足や生産性向上に課題を抱える中小製造業に対して、IoT導入支援、既存設備のデータ収集・活用、段階的なスマートファクトリー化のコンサルティングおよび実行支援を行います。",
+                points: [
+                    "大掛かりなシステム投資ありきではなく、既存設備を活かしつつ、費用対効果の高い局所的な改善から着手することを提案し、伴走支援します。古い機械の知見がここで活きます。",
+                    "最新技術の紹介だけでなく、現場で実際に運用できる技術選定、導入、定着までをサポートします。",
+                    "課題抽出から具体的な機械改造・システム導入までを一気通貫で提供できる強みを活かします。"
+                ],
+                effects: "新たな収益の柱、既存顧客との関係深化、コンサルティングノウハウの蓄積。",
+                synergy: [
+                    "古い機械の修理・メンテナンスで培った幅広い知識が、既存設備の有効活用提案に繋がります。",
+                    "製造コンサルティングの経験を活かし、顧客の真の課題を見抜きます。",
+                    "機械改造の技術力で、具体的なスマート化ソリューションを提供できます。"
+                ],
+                targetMarket: [
+                    { name: "金属加工C社", description: "熟練工の引退が迫り、技術継承と生産性維持に課題。IoTに関心があるが何から始めれば良いか不明。" },
+                    { name: "部品組立D社", description: "多品種少量生産で、生産状況のリアルタイム把握と効率化が急務。" }
+                ],
+                steps: [
+                    "中小製造業向けのセミナー・ワークショップ開催による啓蒙活動",
+                    "無料診断サービスの提供と課題の明確化",
+                    "モデルケースとなる成功事例の構築と横展開"
+                ],
+                challengePoints: null
+            },
+            {
+                id: 3,
+                name: "実践型・技術者育成プログラム提供事業",
+                type: "現実的アイデア",
+                catchphrase: "生きた技術を伝承。未来の職人を育てる！",
+                image: "https://placehold.co/400x250/a5f3fc/0f172a?text=グループで学ぶ楽しそうな技術者のイラスト",
+                overview: "貴社が持つ機械設計、製作、メンテナンス、安全対策に関する高度な技術やノウハウを体系化し、若手技術者や多能工化を目指す企業向けの研修プログラム（OJT支援、座学、実習）として提供します。",
+                points: [
+                    "理論だけでなく、実際の機械を使ったトラブルシューティングやメンテナンス実習など、実践的なスキルが身につく内容を重視します。",
+                    "顧客企業のニーズや受講者のレベルに合わせた研修内容のカスタマイズを行います。",
+                    "技術継承への貢献：自社のみならず、地域や業界全体の技術力向上と人材育成に貢献します。"
+                ],
+                effects: "安定的な収益、社内ノウハウの可視化・体系化、企業ブランドイメージの向上。",
+                synergy: [
+                    "長年培ってきた多様な機械に関する深い知識と経験が、質の高い研修コンテンツの基盤となります。",
+                    "「お客様と共に課題を解決する」姿勢が、受講者に寄り添った丁寧な指導に繋がります。",
+                    "安全対策に関するノウハウは、どの製造現場でも求められる重要な研修要素です。"
+                ],
+                targetMarket: [
+                    { name: "地元工業高校/専門学校", description: "実践的な職業訓練プログラムの導入を検討。" },
+                    { name: "若手採用に積極的な中小企業", description: "社内教育体制の強化、OJTの外部委託を検討。" }
+                ],
+                steps: [
+                    "社内技術・ノウハウの棚卸しとカリキュラム化",
+                    "パイロット研修の実施とフィードバック収集",
+                    "地域企業や教育機関との連携構築"
+                ],
+                challengePoints: null
+            },
+            {
+                id: 4,
+                name: "「感動体験」を生み出す、オーダーメイド型からくり装置/メカニカルアート制作事業",
+                type: "飛躍的アイデア",
+                catchphrase: "技術×遊び心！世界を驚かすメカニズム。",
+                image: "https://placehold.co/400x250/f9a8d4/ffffff?text=驚く人々が見上げる面白いからくり装置のイラスト",
+                overview: "機械設計・製作技術を、従来の産業機械の枠を超えてエンターテイメントやアートの領域に応用し、商業施設、イベント、テーマパーク、あるいは個人向けに、人を驚かせたり感動させたりするオーダーメイドの「からくり装置」やメカニカルアート作品を制作・提供します。",
+                points: [
+                    "精密な機械技術と、遊び心や物語性のあるアイデアを組み合わせることで、唯一無二の作品を生み出します。",
+                    "単なる「モノ」ではなく、それによって生み出される「体験」や「感動」を価値として提供します。",
+                    "ユニークな作品はメディアに取り上げられやすく、企業の認知度向上にも繋がります。"
+                ],
+                effects: "新市場の開拓、企業イメージの刷新、社員の創造性刺激、高付加価値なビジネスモデル。",
+                synergy: [
+                    "機械設計・製作の高度な技術が、複雑でユニークな動きを実現する基盤となります。",
+                    "既存機械の改造で培った柔軟な発想力が、アート作品のアイデア創出に活かせます。",
+                    "「お客様と共に課題を解決する」スタイルで、クライアントの「感動させたい」という想いを形にします。"
+                ],
+                targetMarket: [
+                    { name: "商業施設/テーマパーク運営会社", description: "集客力のあるユニークな展示物やアトラクションを求めている。" },
+                    { name: "イベント企画会社", description: "記憶に残る体験型コンテンツを探している。" },
+                    { name: "富裕層の個人コレクター", description: "自宅や別荘に飾る一点物のアート作品を希望。" }
+                ],
+                steps: [
+                    "社内アイデアコンテストやワークショップの開催",
+                    "アーティストやデザイナーとのコラボレーション模索",
+                    "小規模なプロトタイプ作品の制作と展示会への出展"
+                ],
+                challengePoints: [
+                    "産業機械とは異なる美的センスやエンタメ性の追求が必要。",
+                    "プロジェクトごとの採算性評価とリスク管理。",
+                    "新たな販売チャネルの開拓とブランディング戦略。"
+                ]
+            },
+            {
+                id: 5,
+                name: "「ヘリテージマシン」再生・活用プラットフォーム事業",
+                type: "飛躍的アイデア",
+                catchphrase: "機械遺産に魂を。時を超えて価値を繋ぐ。",
+                image: "https://placehold.co/400x250/fde047/0f172a?text=ピカピカに修復されたレトロな機械のイラスト",
+                overview: "「古い機械の修理・メンテナンス」の卓越した技術を活かし、歴史的価値のある古い産業機械や、特定のファンを持つレトロな機械（工作機械、印刷機、音響機器など）を収集・再生（レストア）し、それを必要とする企業やコレクター、博物館などに販売・リースするプラットフォーム事業を展開します。",
+                points: [
+                    "失われつつある古い機械とその技術を現代に蘇らせ、未来に繋げます。",
+                    "特定の分野で深い専門性と希少価値を提供することで、独自のポジションを確立します。",
+                    "機械が持つ歴史や背景にある物語を発掘・発信し、共感を呼ぶブランディングを行います。オンラインでの情報発信やコミュニティ形成も有効です。"
+                ],
+                effects: "独自の強みを活かしたブルーオーシャン市場の開拓、高い利益率、社会貢献、企業の物語性の強化。",
+                synergy: [
+                    "「古い機械の修理・メンテナンス」における高度な技術と経験が、他の追随を許さない競争優位性となります。",
+                    "多様なメーカー・年代の機械に触れてきた知見が、希少な機械の価値判断や再生計画に活かせます。",
+                    "丁寧な仕事スタイルが、高価でデリケートなヘリテージマシンの取り扱いに適しています。"
+                ],
+                targetMarket: [
+                    { name: "博物館/産業遺産施設", description: "展示用の稼働可能な歴史的機械を探している。" },
+                    { name: "特定分野の愛好家/コレクター", description: "希少なレトロ機械の入手やレストアを希望。" },
+                    { name: "デザイン事務所/アパレルブランド等", description: "店舗ディスプレイやブランドイメージ構築のためのユニークな機械を求めている。" }
+                ],
+                steps: [
+                    "再生対象とする機械のジャンル選定と専門知識の深化",
+                    "国内外のオークションや専門家ネットワークからの情報収集ルート確立",
+                    "オンラインプラットフォームの構築とPR活動"
+                ],
+                challengePoints: [
+                    "入手困難な部品の調達や代替品の製作技術。",
+                    "機械の歴史的価値を正確に評価する鑑定眼の養成。",
+                    "ニッチ市場における顧客開拓と信頼関係構築。"
+                ]
+            }
+        ];
+
+        const ideaGrid = document.getElementById('idea-grid');
+        const modal = document.getElementById('ideaModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalTabsContainer = document.getElementById('modalTabs');
+        const modalTabContentContainer = document.getElementById('modalTabContentContainer');
+        const closeModalButton = document.getElementById('closeModal');
+        const closeModalFooterButton = document.getElementById('closeModalFooter');
+        
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // アイデアカードを生成して表示
+        ideas.forEach(idea => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer flex flex-col';
+            
+            let typeColorClass = 'bg-sky-500'; // 現実的アイデア
+            if (idea.type === '飛躍的アイデア') {
+                typeColorClass = 'bg-pink-500';
+            }
+
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${idea.image}" alt="${idea.name}" class="w-full h-56 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x250/cccccc/969696?text=画像読込失敗';">
+                    <span class="absolute top-0 right-0 mt-2 mr-2 text-xs font-semibold text-white px-3 py-1 rounded-full ${typeColorClass}">${idea.type}</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-xl font-semibold mb-2 text-slate-800">${idea.name}</h3>
+                    <p class="text-sm text-sky-600 font-medium mb-3">${idea.catchphrase}</p>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-grow">${idea.overview}</p>
+                    <button class="mt-auto w-full bg-sky-600 text-white py-2 px-4 rounded-lg hover:bg-sky-700 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50">
+                        詳細を見る
+                    </button>
+                </div>
+            `;
+            card.addEventListener('click', () => openModal(idea));
+            ideaGrid.appendChild(card);
+        });
+
+        // モーダルを開く関数
+        function openModal(idea) {
+            modalTitle.textContent = idea.name;
+            
+            // タブとタブコンテンツをクリア
+            modalTabsContainer.innerHTML = '';
+            modalTabContentContainer.innerHTML = '';
+
+            const tabsConfig = [
+                { key: 'overview', title: '概要' },
+                { key: 'points', title: 'ポイント' },
+                { key: 'effects', title: '期待される効果' },
+                { key: 'synergy', title: '強みとのシナジー' },
+                { key: 'targetMarket', title: 'ターゲット市場' },
+                { key: 'steps', title: '実現へのステップ' },
+            ];
+
+            if (idea.challengePoints && idea.challengePoints.length > 0) {
+                tabsConfig.push({ key: 'challengePoints', title: '面白/挑戦ポイント' });
+            }
+            
+            tabsConfig.forEach((tabConfig, index) => {
+                // タブボタンの作成
+                const tabButton = document.createElement('button');
+                tabButton.className = `px-3 py-2 font-medium text-sm rounded-t-lg border-b-2 transition-colors duration-150 ease-in-out`;
+                if (index === 0) {
+                    tabButton.classList.add('border-sky-500', 'text-sky-600');
+                    tabButton.setAttribute('aria-selected', 'true');
+                } else {
+                    tabButton.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                    tabButton.setAttribute('aria-selected', 'false');
+                }
+                tabButton.textContent = tabConfig.title;
+                tabButton.setAttribute('role', 'tab');
+                tabButton.setAttribute('data-tab-target', `tab-${tabConfig.key}`);
+                modalTabsContainer.appendChild(tabButton);
+
+                // タブコンテンツの作成
+                const tabContent = document.createElement('div');
+                tabContent.id = `tab-${tabConfig.key}`;
+                tabContent.className = 'tab-content p-1';
+                if (index === 0) {
+                    tabContent.classList.add('active');
+                }
+                tabContent.setAttribute('role', 'tabpanel');
+
+                let contentHTML = '';
+                const ideaData = idea[tabConfig.key];
+
+                if (typeof ideaData === 'string') {
+                    contentHTML = `<p class="text-slate-700 leading-relaxed">${ideaData}</p>`;
+                } else if (Array.isArray(ideaData)) {
+                    if (tabConfig.key === 'targetMarket') {
+                        contentHTML = '<ul class="space-y-3">';
+                        ideaData.forEach(item => {
+                            contentHTML += `<li class="p-3 bg-sky-50 rounded-md border border-sky-200"><strong class="text-sky-700">${item.name}:</strong> <span class="text-slate-600">${item.description}</span></li>`;
+                        });
+                        contentHTML += '</ul>';
+                    } else {
+                        contentHTML = '<ul class="list-disc list-inside space-y-2 text-slate-700 leading-relaxed">';
+                        ideaData.forEach(item => {
+                            contentHTML += `<li>${item}</li>`;
+                        });
+                        contentHTML += '</ul>';
+                    }
+                }
+                tabContent.innerHTML = contentHTML;
+                modalTabContentContainer.appendChild(tabContent);
+
+                // タブ切り替えイベント
+                tabButton.addEventListener('click', () => {
+                    // すべてのタブボタンから選択状態を解除
+                    modalTabsContainer.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('border-sky-500', 'text-sky-600');
+                        btn.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    // クリックされたタブを選択状態にする
+                    tabButton.classList.add('border-sky-500', 'text-sky-600');
+                    tabButton.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                    tabButton.setAttribute('aria-selected', 'true');
+
+                    // すべてのタブコンテンツを非表示
+                    modalTabContentContainer.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    // 対応するタブコンテンツを表示
+                    document.getElementById(`tab-${tabConfig.key}`).classList.add('active');
+                });
+            });
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // 背景のスクロールを禁止
+        }
+
+        // モーダルを閉じる関数
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // 背景のスクロールを許可
+        }
+
+        closeModalButton.addEventListener('click', closeModal);
+        closeModalFooterButton.addEventListener('click', closeModal);
+
+        // モーダル外クリックで閉じる
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Escキーでモーダルを閉じる
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'flex') {
+                closeModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
